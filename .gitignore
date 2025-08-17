@@ -1,0 +1,25 @@
+# Production gitignore
+node_modules/
+*.log
+*.tmp
+.env
+.env.local
+.env.production
+dist/
+build/
+temp/
+logs/
+coverage/
+.nyc_output/
+debug-*
+test-*.json
+test-*.js
+!Backend/tests/
+!ONLINE-JUDGE-FRONTEND/__tests__/
+*.test.js
+*.spec.js
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~

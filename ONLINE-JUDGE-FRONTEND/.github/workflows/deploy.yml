@@ -1,0 +1,106 @@
+name: Frontend CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'ONLINE-JUDGE-FRONTEND/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'ONLINE-JUDGE-FRONTEND/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: ONLINE-JUDGE-FRONTEND/package-lock.json
+        
+    - name: Install dependencies
+      working-directory: ./ONLINE-JUDGE-FRONTEND
+      run: npm ci
+      
+    - name: Run linting
+      working-directory: ./ONLINE-JUDGE-FRONTEND
+      run: npm run lint
+      
+    - name: Run tests
+      working-directory: ./ONLINE-JUDGE-FRONTEND
+      run: npm run test
+      
+    - name: Build application
+      working-directory: ./ONLINE-JUDGE-FRONTEND
+      run: npm run build
+      env:
+        NEXTAUTH_URL: http://localhost:3000
+        NEXTAUTH_SECRET: test-secret
+        NEXT_PUBLIC_API_URL: http://localhost:5000/api
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: Build, tag, and push Docker image
+      working-directory: ./ONLINE-JUDGE-FRONTEND
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: online-judge-frontend
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          # Update and restart the frontend service
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+          docker pull ${{ secrets.ECR_REGISTRY }}/online-judge-frontend:latest
+          docker stop online-judge-frontend || true
+          docker rm online-judge-frontend || true
+          docker run -d \
+            --name online-judge-frontend \
+            -p 3000:3000 \
+            --restart unless-stopped \
+            -e NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} \
+            -e NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} \
+            -e NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
+            -e MONGODB_URI=${{ secrets.MONGODB_URI }} \
+            ${{ secrets.ECR_REGISTRY }}/online-judge-frontend:latest

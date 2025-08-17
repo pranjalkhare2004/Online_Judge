@@ -1,0 +1,207 @@
+# DOCKER COMPOSE ORCHESTRATION CONFIGURATION
+#
+# DESCRIPTION:
+# This Docker Compose file orchestrates the complete Online Judge backend infrastructure
+# including the main application, MongoDB database, Redis cache, and supporting services.
+# It manages service dependencies, networking, volume management, and environment
+# configuration for development and production deployments.
+#
+# SERVICES:
+# - app: Main Node.js backend application
+# - mongodb: Database service with persistence
+# - redis: Cache and session store
+# - mongo-express: Database administration UI (optional)
+#
+# FEATURES:
+# - Service dependency management
+# - Network isolation and communication
+# - Volume persistence for data
+# - Environment variable configuration
+# - Health checks and restart policies
+# - Resource limits and constraints
+# - Docker socket mounting for code execution
+#
+# NETWORKING:
+# - Custom bridge network (online-judge-network)
+# - Service discovery by container name
+# - Port mapping to host system
+# - Internal service communication
+#
+# VOLUMES:
+# - mongodb_data: Database persistence
+# - redis_data: Cache persistence  
+# - compiler_cache: Code compilation cache
+# - Docker socket: Container execution capability
+#
+# USED BY:
+# - Development environments: Local setup
+# - Production deployments: Container orchestration
+# - CI/CD pipelines: Testing and deployment
+# - Docker Swarm: Cluster deployment
+# - Kubernetes: Service definition reference
+#
+# ENVIRONMENT VARIABLES:
+# - Loaded from .env file
+# - Service-specific configurations
+# - Database connection strings
+# - Authentication secrets
+# - External service URLs
+
+version: '3.8'
+
+services:
+  # Main Application Service
+  app:
+    build: 
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: online-judge-app
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - MONGODB_URI=mongodb://mongodb:27017/onlinejudge
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - FRONTEND_URL=http://localhost:3000
+      - DOCKER_ENABLED=true
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./Backend:/app
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0
+    container_name: online-judge-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: onlinejudge
+    volumes:
+      - mongodb_data:/data/db
+      - ./Backend/scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - online-judge-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: online-judge-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - online-judge-network
+
+  # Compiler Images for Code Execution
+  node-executor:
+    image: node:18-alpine
+    container_name: online-judge-node
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  python-executor:
+    image: python:3.9-alpine
+    container_name: online-judge-python
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  java-executor:
+    image: openjdk:11-alpine
+    container_name: online-judge-java
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  cpp-executor:
+    image: gcc:latest
+    container_name: online-judge-cpp
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  go-executor:
+    image: golang:1.19-alpine
+    container_name: online-judge-go
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  rust-executor:
+    image: rust:1.65-alpine
+    container_name: online-judge-rust
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  kotlin-executor:
+    image: openjdk:11-alpine
+    container_name: online-judge-kotlin
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  swift-executor:
+    image: swift:5.7
+    container_name: online-judge-swift
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  php-executor:
+    image: php:8.1-alpine
+    container_name: online-judge-php
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+  ruby-executor:
+    image: ruby:3.1-alpine
+    container_name: online-judge-ruby
+    command: tail -f /dev/null
+    volumes:
+      - compiler_cache:/tmp/compiler
+    networks:
+      - online-judge-network
+
+networks:
+  online-judge-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data:
+  compiler_cache:

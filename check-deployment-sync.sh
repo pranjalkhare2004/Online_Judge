@@ -30,10 +30,11 @@ echo ""
 
 # 3. Vercel Frontend Check
 echo "🌐 3. VERCEL FRONTEND STATUS:"
-echo "Expected URL: https://online-judge-frontend-ten.vercel.app"
-VERCEL_STATUS=$(curl -s -w "%{http_code}" https://online-judge-frontend-ten.vercel.app -o /tmp/vercel_response.html)
+echo "Custom Domain: https://codeopedia.vercel.app"
+echo "Direct URL: https://online-judge-frontend-r56hoj3jr-pranjalkhare2004-8180s-projects.vercel.app"
+VERCEL_STATUS=$(curl -s -w "%{http_code}" https://codeopedia.vercel.app -o /tmp/vercel_response.html)
 if [ "$VERCEL_STATUS" = "200" ]; then
-    echo "✅ Vercel frontend is live"
+    echo "✅ Vercel frontend is live and accessible"
 elif [ "$VERCEL_STATUS" = "404" ]; then
     echo "⚠️  Vercel deployment not found - needs redeployment"
     echo "   Error: DEPLOYMENT_NOT_FOUND"
@@ -45,7 +46,7 @@ echo ""
 # 4. CORS Test
 echo "🌍 4. CORS CONFIGURATION TEST:"
 CORS_TEST=$(curl -s -w "%{http_code}" \
-  -H "Origin: https://online-judge-frontend-ten.vercel.app" \
+  -H "Origin: https://codeopedia.vercel.app" \
   -H "Access-Control-Request-Method: POST" \
   -H "Access-Control-Request-Headers: Content-Type,Authorization" \
   -X OPTIONS \

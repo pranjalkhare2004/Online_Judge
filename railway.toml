@@ -1,0 +1,45 @@
+# 🚀 Railway Deployment Configuration
+# This file configures Railway deployment settings
+
+# Build settings
+[build]
+  # Build command
+  buildCommand = "cd Backend && npm install --production"
+  
+  # Watch paths for auto-deployment
+  watchPatterns = ["Backend/**"]
+
+# Deployment settings
+[deploy]
+  # Start command
+  startCommand = "cd Backend && npm start"
+  
+  # Health check endpoint
+  healthcheckPath = "/api/health"
+  
+  # Health check timeout
+  healthcheckTimeout = 300
+  
+  # Restart policy
+  restartPolicyType = "ON_FAILURE"
+  restartPolicyMaxRetries = 3
+
+# Environment variables (set these in Railway dashboard)
+[env]
+  NODE_ENV = "production"
+  # MONGODB_URI = "your-mongodb-atlas-connection-string"
+  # JWT_SECRET = "your-super-secure-jwt-secret"
+  # CORS_ORIGIN = "https://your-frontend-domain.vercel.app"
+
+# Resource limits
+[resources]
+  # Memory limit (MB)
+  memory = 512
+  
+  # CPU limit (vCPU)
+  cpu = 0.5
+
+# Network settings
+[network]
+  # Custom domain (optional)
+  # domains = ["api.yourdomain.com"]

@@ -1,0 +1,134 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+.lcov
+.nyc_output
+
+# Logs
+logs/
+*.log
+execution.log
+
+# Build outputs
+build/
+dist/
+out/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Package files
+*.tgz
+*.tar.gz
+
+# Yarn
+.yarn-integrity
+.yarn/
+.pnp.*
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test files and temporary files
+*.test.js.snap
+test-results/
+temp/
+tmp/
+.tmp/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+.dockerignore
+
+# Deployment
+.vercel/
+.railway/
+
+# Debug and analysis files
+*debug*
+*test*
+*temp*
+*.report.md
+*.analysis.md
+comprehensive-*.js
+integration-test.js
+cleanup-*.js
+
+# Compiled binaries
+*.exe
+*.out
+*.o
+*.class
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# C/C++
+*.i*86
+*.x86_64
+*.hex

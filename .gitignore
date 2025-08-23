@@ -1,0 +1,113 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment variables (NEVER commit these)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+.env.example.filled
+
+# Build outputs
+build/
+dist/
+out/
+.next/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.npm/
+.yarn/
+.pnp/
+.pnp.js
+
+# Coverage
+coverage/
+.lcov
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Deployment
+.vercel/
+.railway/
+.serverless/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+temp/
+tmp/
+.tmp/
+*.tmp
+
+# Test files (but keep test directories)
+test-results/
+*.test.js.snap
+debug-*
+test-*.json
+test-*.js
+*.test.js
+*.spec.js
+!Backend/tests/
+!ONLINE-JUDGE-FRONTEND/__tests__/
+
+# Debug and development files
+*debug*
+*cleanup*
+*.report.md
+*.analysis.md
+comprehensive-*.js
+integration-test.js
+
+# Docker
+.dockerignore
+
+# Package files
+*.tgz
+*.tar.gz
+
+# Compiled binaries
+*.exe
+*.out
+*.o
+*.class
+
+# Deployment package
+deployment-package/

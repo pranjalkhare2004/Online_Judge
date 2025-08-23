@@ -1,0 +1,176 @@
+/* Admin Navbar Custom Styles */
+
+/* Ensure admin navbar fits within screen width */
+.admin-navbar-container {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Admin navigation responsive adjustments */
+.admin-nav-items {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.admin-nav-items::-webkit-scrollbar {
+  display: none;
+}
+
+/* Admin nav item responsive sizing */
+.admin-nav-item {
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: fit-content;
+}
+
+/* Mobile admin improvements */
+@media (max-width: 768px) {
+  .admin-mobile-menu {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .admin-mobile-profile {
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+  
+  .admin-mobile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+}
+
+/* Tablet responsive adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .admin-desktop-nav {
+    max-width: calc(100vw - 400px);
+    overflow-x: auto;
+  }
+  
+  .admin-nav-label-lg {
+    display: none;
+  }
+  
+  .admin-nav-label-sm {
+    display: inline;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1024px) {
+  .admin-nav-label-lg {
+    display: inline;
+  }
+  
+  .admin-nav-label-sm {
+    display: none;
+  }
+}
+
+/* Admin quick stats responsive */
+.admin-quick-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.admin-quick-stats-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Admin dropdown menu improvements */
+.admin-dropdown {
+  max-width: calc(100vw - 2rem);
+  overflow: visible;
+}
+
+.admin-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.admin-dropdown-item:hover {
+  background-color: rgba(251, 146, 60, 0.1);
+  transform: translateX(2px);
+}
+
+/* Admin badge animations */
+.admin-badge {
+  animation: admin-pulse 2s infinite;
+}
+
+@keyframes admin-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Admin status indicator */
+.admin-status-online {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-status-online::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: admin-shimmer 3s infinite;
+}
+
+@keyframes admin-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Admin navigation active state */
+.admin-nav-active {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-nav-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #f97316, #ea580c);
+  animation: admin-active-bar 2s ease-in-out infinite alternate;
+}
+
+@keyframes admin-active-bar {
+  0% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}

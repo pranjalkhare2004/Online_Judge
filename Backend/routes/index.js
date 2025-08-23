@@ -64,6 +64,7 @@ const testCaseRoutes = require('./testCases');
 const notificationRoutes = require('./notifications');
 const compilerRoutes = require('./compiler'); // Using unified Docker compiler
 const dockerRoutes = require('./docker'); // New Docker compiler routes
+const enhancedApiRoutes = require('./enhanced-api'); // Enhanced API routes
 
 const router = express.Router();
 
@@ -80,6 +81,7 @@ router.use('/testcases', testCaseRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/compiler', compilerRoutes);
 router.use('/docker', dockerRoutes); // Mount Docker compiler routes
+router.use('/enhanced', enhancedApiRoutes); // Mount enhanced API routes
 
 // API documentation endpoint
 router.get('/', (req, res) => {

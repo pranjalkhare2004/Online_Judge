@@ -67,7 +67,11 @@ module.exports = (app) => {
   // CORS configuration
   app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-      ? process.env.FRONTEND_URL 
+      ? [
+          'https://codeopedia.vercel.app',
+          'https://online-judge-frontend-r56hoj3jr-pranjalkhare2004-8180s-projects.vercel.app',
+          process.env.FRONTEND_URL
+        ].filter(Boolean)
       : ['http://localhost:3000', 'http://localhost:3002'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],

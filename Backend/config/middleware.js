@@ -64,20 +64,47 @@ module.exports = (app) => {
     crossOriginEmbedderPolicy: false
   }));
   
-  // CORS configuration
+  // CORS configuration - Enhanced for Railway deployment
+  const allowedOrigins = process.env.NODE_ENV === 'production' 
+    ? [
+        'https://codeopedia.vercel.app',
+        'https://online-judge-frontend-r56hoj3jr-pranjalkhare2004-8180s-projects.vercel.app',
+        process.env.FRONTEND_URL,
+        'https://online-judge-frontend-ten.vercel.app' // Legacy URL
+      ].filter(Boolean)
+    : ['http://localhost:3000', 'http://localhost:3002'];
+
+  console.log('🌍 CORS Allowed Origins:', allowedOrigins);
+  
   app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-      ? [
-          'https://codeopedia.vercel.app',
-          'https://online-judge-frontend-r56hoj3jr-pranjalkhare2004-8180s-projects.vercel.app',
-          process.env.FRONTEND_URL
-        ].filter(Boolean)
-      : ['http://localhost:3000', 'http://localhost:3002'],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        console.warn('❌ CORS: Origin not allowed:', origin);
+        return callback(new Error('Not allowed by CORS'), false);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    exposedHeaders: ['X-Total-Count', 'X-Page-Count']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+    exposedHeaders: ['X-Total-Count', 'X-Page-Count'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   }));
+  
+  // Explicit OPTIONS handler for preflight requests
+  app.options('*', (req, res) => {
+    console.log('🚀 OPTIONS request from:', req.headers.origin);
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(204);
+  });
   
   // Compression middleware
   app.use(compression({

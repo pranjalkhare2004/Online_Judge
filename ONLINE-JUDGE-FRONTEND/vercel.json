@@ -1,8 +1,6 @@
-# Vercel Configuration for Frontend Deployment
-
 {
   "version": 2,
-  "name": "online-judge-frontend",
+  "name": "code-judge",
   "builds": [
     {
       "src": "package.json",
